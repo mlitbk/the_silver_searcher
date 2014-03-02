@@ -163,10 +163,18 @@ void search_stream(FILE *stream, const char *path) {
     char *line = NULL;
     ssize_t line_len = 0;
     size_t line_cap = 0;
+    size_t file_length = 1;
+
+    char *content = malloc(sizeof(char));
+    content[0] = '\0';
 
     while ((line_len = getline(&line, &line_cap, stream)) > 0) {
-        search_buf(line, line_len, path);
+        file_length += line_len;
+        content = realloc(content, file_length);
+        strcat(content, line);
     }
+
+    search_buf(content, file_length, path);
 
     free(line);
 }
