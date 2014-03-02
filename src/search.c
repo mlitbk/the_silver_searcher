@@ -169,13 +169,20 @@ void search_stream(FILE *stream, const char *path) {
     content[0] = '\0';
 
     while ((line_len = getline(&line, &line_cap, stream)) > 0) {
+        char *old = content;
+
         file_length += line_len;
         content = realloc(content, file_length);
         strcat(content, line);
+
+        if (content == NULL) {
+            free(old);
+        }
     }
 
     search_buf(content, file_length, path);
 
+    free(content);
     free(line);
 }
 
